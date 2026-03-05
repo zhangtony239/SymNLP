@@ -19,7 +19,7 @@ class Proposition:
         return f"{self.s}{self.v}{self.o}"
 
 @staticmethod
-def SVO(s1:MockObj, v1:MockObj, o1:MockObj, s2:MockObj, v2:MockObj, o2:MockObj): #后期换成对应的oop
+def SVO(s1:MockObj, v1:MockObj, o1:MockObj, s2:MockObj, v2:MockObj, o2:MockObj): #后期换成对应的oop：svo的具体操作听从verb对象的内置规则。
     if s1.name == s2.name:
         s = s1
     else:
