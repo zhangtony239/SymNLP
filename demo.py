@@ -29,7 +29,7 @@ def chat(message, history):
     try:
         # 调用 OpenAI 兼容 API
         response = client.chat.completions.create(
-            model="qwen-plus",
+            model="symeru",
             messages=messages,
             stream=True
         )

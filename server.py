@@ -9,7 +9,15 @@ app = Flask(__name__)
 # 模拟模型列表
 MODELS = [
     {
-        "id": "symeru-embeddinggemma-gemma3",
+        "id": "symeru",
+        "object": "model",
+        "created": 1773541560,
+        "owned_by": "tony",
+        "root": "DACI",
+        "parent": None
+    },
+    {
+        "id": "symeru-cloud",
         "object": "model",
         "created": 1773541560,
         "owned_by": "tony",
@@ -90,8 +98,23 @@ def chat_completions():
         # 如果是流式响应
         if stream:
             def generate_stream():
-                # 发送开始事件
-                yield f"data: {json.dumps({})}\n\n"
+                # 发送初始chunk，包含模型和ID等信息但没有内容
+                first_chunk = {
+                    "id": f"chatcmpl-{uuid.uuid4()}",
+                    "object": "chat.completion.chunk",
+                    "created": int(time.time()),
+                    "model": model,
+                    "choices": [
+                        {
+                            "index": 0,
+                            "delta": {
+                                "role": "assistant"
+                            },
+                            "finish_reason": None
+                        }
+                    ]
+                }
+                yield f"data: {json.dumps(first_chunk)}\n\n"
                 
                 # 模拟流式响应
                 content = "这是一个模拟的流式响应。在实际实现中，这里会连接到真实的OpenAI API。"
@@ -202,9 +225,6 @@ def completions():
         # 如果是流式响应
         if stream:
             def generate_stream():
-                # 发送开始事件
-                yield f"data: {json.dumps({})}\n\n"
-                
                 # 模拟流式响应
                 content = "这是一个模拟的流式响应。在实际实现中，这里会连接到真实的OpenAI API。"
                 words = content.split()
@@ -212,7 +232,7 @@ def completions():
                 for i, word in enumerate(words):
                     chunk = {
                         "id": f"cmpl-{uuid.uuid4()}",
-                        "object": "text_completion.chunk",
+                        "object": "text_completion",
                         "created": int(time.time()),
                         "model": model,
                         "choices": [
@@ -228,7 +248,7 @@ def completions():
                 # 结束标记
                 end_chunk = {
                     "id": f"cmpl-{uuid.uuid4()}",
-                    "object": "text_completion.chunk",
+                    "object": "text_completion",
                     "created": int(time.time()),
                     "model": model,
                     "choices": [
